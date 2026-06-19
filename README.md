@@ -46,6 +46,23 @@ Desde el panel de Supabase: **Authentication** → selecciona el usuario →
   **autenticados**. Sin login, nadie accede.
 - Los datos se comparten en vivo entre todos los que tengan cuenta.
 
+## Actualizar las finanzas (sección Finanzas)
+
+La pestaña **Finanzas** se arma a partir del archivo `finanzas.json`, que se genera
+desde el Excel de tesorería con un script.
+
+Cuando tengas un Excel nuevo:
+
+```
+python build_finanzas.py "ruta/al/tesoreria_apoderados.xlsx"
+git add finanzas.json
+git commit -m "Actualizar finanzas"
+git push
+```
+
+(Requiere `pip install openpyxl` la primera vez.) Los datos se publican en ~1 minuto.
+El Excel original **no** se sube al repositorio, solo el `finanzas.json` resultante.
+
 ## Actualizar la página
 
 Editar los archivos y luego:

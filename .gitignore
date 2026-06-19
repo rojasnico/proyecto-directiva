@@ -1,0 +1,4 @@
+# Excel de tesorería: contiene datos personales, NO se sube. Solo se sube finanzas.json
+*.xlsx
+*.xls
+__pycache__/

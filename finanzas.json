@@ -1,0 +1,101 @@
+{
+  "generado": "2026-06-19",
+  "titulo": "Tesorería Apoderados 2026",
+  "resumen": {
+    "cuotas_esperado": 1450000,
+    "cuotas_recaudado": 750000,
+    "cuotas_diferencia": 700000,
+    "saldo_a_favor": 260940,
+    "gastos": 332110,
+    "saldo_disponible": 678830
+  },
+  "gastos": {
+    "filas": [
+      {
+        "fecha": "04-01-2026",
+        "actividad": "Desayuno",
+        "descripcion": "Actividad de desayuno curso",
+        "monto": 17980
+      },
+      {
+        "fecha": "18/5/2026",
+        "actividad": "Regalo",
+        "descripcion": "Día de la madre",
+        "monto": 48270
+      },
+      {
+        "fecha": "31/5/2026",
+        "actividad": "Adorno alianzas",
+        "descripcion": "Marcos",
+        "monto": 15540
+      },
+      {
+        "fecha": "30/5/2026",
+        "actividad": "Adorno alianzas",
+        "descripcion": "Articulos",
+        "monto": 7200
+      },
+      {
+        "fecha": "06-01-2026",
+        "actividad": "Adorno alianzas",
+        "descripcion": "Articulos",
+        "monto": 9970
+      },
+      {
+        "fecha": "22/5/2026",
+        "actividad": "Adorno alianzas",
+        "descripcion": "Articulos",
+        "monto": 13130
+      },
+      {
+        "fecha": "22/5/2026",
+        "actividad": "Adorno alianzas",
+        "descripcion": "Articulos",
+        "monto": 37000
+      },
+      {
+        "fecha": "06-03-2026",
+        "actividad": "Desayuno compartido",
+        "descripcion": "jugos",
+        "monto": 13370
+      },
+      {
+        "fecha": "06-04-2026",
+        "actividad": "Desayuno compartido",
+        "descripcion": "donas",
+        "monto": 58275
+      },
+      {
+        "fecha": "06-05-2026",
+        "actividad": "Alianzas",
+        "descripcion": "Atun",
+        "monto": 18000
+      },
+      {
+        "fecha": "19/6/2026",
+        "actividad": "Convivencia",
+        "descripcion": "Estacionamiento",
+        "monto": 400
+      },
+      {
+        "fecha": "19/6/2026",
+        "actividad": "Convivencia",
+        "descripcion": "Servilletas",
+        "monto": 1000
+      },
+      {
+        "fecha": "19/6/2026",
+        "actividad": "Convivencia",
+        "descripcion": "Pizzas",
+        "monto": 84315
+      },
+      {
+        "fecha": "19/6/2026",
+        "actividad": "Convivencia",
+        "descripcion": "Platos (1000)",
+        "monto": 7660
+      }
+    ],
+    "total": 332110
+  }
+}

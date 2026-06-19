@@ -174,6 +174,32 @@
   .modal .ok{ color:var(--verde); font-size:13px; min-height:18px; margin:-4px 0 12px; font-weight:600; }
   .modal-actions{ display:flex; gap:8px; margin-top:6px; }
 
+  /* Pestañas (menú) */
+  .tabs{ display:flex; gap:4px; margin:0 0 22px; border-bottom:1px solid var(--linea); }
+  .tab{ font:inherit; font-weight:600; font-size:14px; cursor:pointer; border:none; background:none;
+    color:var(--tinta-suave); padding:10px 16px; border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tab:hover{ color:var(--tinta); }
+  .tab.active{ color:var(--azul); border-bottom-color:var(--azul); }
+
+  /* Finanzas */
+  .fin-card{ background:#fff; border:1px solid var(--linea); border-radius:var(--radio);
+    box-shadow:var(--sombra); padding:20px; margin-bottom:16px; }
+  .fin-card h3{ font-family:"Fraunces",serif; font-weight:600; font-size:17px; margin:0 0 14px; }
+  .fin-tabla-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; }
+  table.fin{ width:100%; border-collapse:collapse; font-size:13px; white-space:nowrap; }
+  table.fin th, table.fin td{ padding:8px 10px; text-align:right; border-bottom:1px solid var(--linea); }
+  table.fin th:first-child, table.fin td:first-child{ text-align:left; position:sticky; left:0; background:#fff; }
+  table.fin thead th{ color:var(--tinta-suave); font-weight:600; text-transform:uppercase; font-size:11px;
+    letter-spacing:.03em; border-bottom:1px solid var(--linea-fuerte); }
+  table.fin tbody tr:hover td{ background:var(--papel); }
+  table.fin tbody tr:hover td:first-child{ background:var(--papel); }
+  table.fin tr.tot td{ font-weight:700; border-top:2px solid var(--linea-fuerte); background:var(--papel-2); }
+  table.fin tr.tot td:first-child{ background:var(--papel-2); }
+  .pill{ display:inline-block; font-size:11px; font-weight:600; border-radius:999px; padding:2px 9px; }
+  .pill.ok{ background:#E4F1EA; color:#1F6B49; }
+  .pill.no{ background:#FCEBEA; color:#B5241B; }
+  .muted{ color:var(--tinta-suave); }
+
   @media (max-width:760px){
     .grid{ grid-template-columns:1fr; } .kpis{ grid-template-columns:1fr; }
     .bar .who{ font-size:12px; } main{ padding:20px 16px 60px; }
@@ -187,22 +213,7 @@
 <div class="login-wrap" id="login">
   <div class="login-card">
     <div class="mark">
-      <svg class="escudo" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Escudo Maristas Santiago">
-        <defs><clipPath id="escClipA"><path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z"/></clipPath></defs>
-        <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="#fff"/>
-        <g clip-path="url(#escClipA)">
-          <rect x="0" y="0" width="120" height="150" fill="#2E3192"/>
-          <rect x="0" y="0" width="120" height="33" fill="#fff"/>
-          <path d="M0,33 Q60,45 120,33 L120,39 Q60,51 0,39 Z" fill="#E2231A"/>
-          <text x="60" y="25" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" letter-spacing="0.5" fill="#E2231A">MARISTAS</text>
-          <g fill="#fff" font-size="8" font-family="Arial,sans-serif" text-anchor="middle">
-            <text x="18" y="64">★</text><text x="26.4" y="61">★</text><text x="34.8" y="59">★</text><text x="43.2" y="57.3">★</text><text x="51.6" y="56.3">★</text><text x="60" y="56">★</text><text x="68.4" y="56.3">★</text><text x="76.8" y="57.3">★</text><text x="85.2" y="59">★</text><text x="93.6" y="61">★</text><text x="102" y="64">★</text>
-          </g>
-          <text x="60" y="109" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" letter-spacing="-2" fill="#fff">MJM</text>
-          <text x="60" y="130" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="14" fill="#fff">Santiago</text>
-        </g>
-        <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="none" stroke="#2E3192" stroke-width="2"/>
-      </svg>
+      <img class="escudo" src="logo.png" alt="Escudo Maristas Santiago" />
       <b>Directiva de Curso</b>
     </div>
     <h1>Panel de eventos y fondos</h1>
@@ -226,22 +237,7 @@
   <header class="bar">
     <div class="bar-in">
       <span class="mark" style="margin:0">
-        <svg class="escudo" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Escudo Maristas Santiago">
-          <defs><clipPath id="escClipB"><path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z"/></clipPath></defs>
-          <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="#fff"/>
-          <g clip-path="url(#escClipB)">
-            <rect x="0" y="0" width="120" height="150" fill="#2E3192"/>
-            <rect x="0" y="0" width="120" height="33" fill="#fff"/>
-            <path d="M0,33 Q60,45 120,33 L120,39 Q60,51 0,39 Z" fill="#E2231A"/>
-            <text x="60" y="25" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" letter-spacing="0.5" fill="#E2231A">MARISTAS</text>
-            <g fill="#fff" font-size="8" font-family="Arial,sans-serif" text-anchor="middle">
-              <text x="18" y="64">★</text><text x="26.4" y="61">★</text><text x="34.8" y="59">★</text><text x="43.2" y="57.3">★</text><text x="51.6" y="56.3">★</text><text x="60" y="56">★</text><text x="68.4" y="56.3">★</text><text x="76.8" y="57.3">★</text><text x="85.2" y="59">★</text><text x="93.6" y="61">★</text><text x="102" y="64">★</text>
-            </g>
-            <text x="60" y="109" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" letter-spacing="-2" fill="#fff">MJM</text>
-            <text x="60" y="130" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="14" fill="#fff">Santiago</text>
-          </g>
-          <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="none" stroke="#2E3192" stroke-width="2"/>
-        </svg>
+        <img class="escudo" src="logo.png" alt="Escudo Maristas Santiago" />
         <b>Directiva de Curso</b>
       </span>
       <div class="who">
@@ -257,6 +253,12 @@
   <main>
     <div class="banner" id="banner"></div>
 
+    <nav class="tabs">
+      <button class="tab active" data-view="eventos">Eventos y fondos</button>
+      <button class="tab" data-view="finanzas">Finanzas</button>
+    </nav>
+
+    <div id="viewEventos">
     <h2 class="sec">Lo que se viene</h2>
     <p class="sec-note">Próximos eventos con fecha, ordenados por cercanía.</p>
     <div class="proximos" id="proximos"></div>
@@ -292,6 +294,13 @@
     <button class="btn ghost sm add-d" id="addEvento" style="margin-top:14px">+ Agregar evento</button>
 
     <p class="foot">Última actualización: <span id="updInfo">—</span> · <a href="#" id="refrescar">Actualizar datos</a></p>
+    </div>
+
+    <div id="viewFinanzas" style="display:none">
+      <h2 class="sec">Finanzas <span id="finTitulo" style="color:var(--tinta-suave);font-weight:400;font-size:15px"></span></h2>
+      <p class="sec-note">Estado financiero del curso (solo lectura). Datos al <span id="finGenerado">—</span>.</p>
+      <div id="finContenido"></div>
+    </div>
   </main>
 
   <div class="modal-bg" id="passModal">
@@ -409,6 +418,72 @@ async function guardarPass(){
   setTimeout(cerrarPass, 1200);
 }
 document.getElementById('passGuardar').onclick = guardarPass;
+
+/* ---------- Menú / pestañas ---------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const v = t.dataset.view;
+    document.getElementById('viewEventos').style.display  = v==='eventos'  ? 'block' : 'none';
+    document.getElementById('viewFinanzas').style.display = v==='finanzas' ? 'block' : 'none';
+    if(v==='finanzas') loadFinanzas();
+  };
+});
+
+/* ---------- Finanzas (solo lectura, desde finanzas.json) ---------- */
+let finanzasData=null, finanzasLoading=false;
+async function loadFinanzas(){
+  if(finanzasData){ renderFinanzas(finanzasData); return; }
+  if(finanzasLoading) return;
+  finanzasLoading=true;
+  const cont=document.getElementById('finContenido');
+  cont.innerHTML=`<div class="vacio">Cargando finanzas…</div>`;
+  try{
+    const res=await fetch('finanzas.json?v='+Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    finanzasData=await res.json();
+    renderFinanzas(finanzasData);
+  }catch(err){
+    console.error(err);
+    cont.innerHTML=`<div class="vacio">Aún no hay datos de finanzas cargados.</div>`;
+  }finally{ finanzasLoading=false; }
+}
+
+function renderFinanzas(d){
+  document.getElementById('finTitulo').textContent  = d.titulo ? '· '+d.titulo : '';
+  document.getElementById('finGenerado').textContent = d.generado || '—';
+  const r=d.resumen||{};
+  const saldo=r.saldo_disponible||0;
+  const dato=(v)=>v?fmtMoney(v):'<span class="muted">·</span>';
+  let html='';
+
+  html+=`<div class="fin-card"><h3>Resumen general</h3>
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi"><div class="lbl">Cuotas recaudadas</div><div class="val mono">${fmtMoney(r.cuotas_recaudado)}</div></div>
+      <div class="kpi"><div class="lbl">Cuotas esperadas</div><div class="val mono">${fmtMoney(r.cuotas_esperado)}</div></div>
+      <div class="kpi"><div class="lbl">Por cobrar (cuotas)</div><div class="val mono">${fmtMoney(r.cuotas_diferencia)}</div></div>
+      <div class="kpi"><div class="lbl">Saldo a favor</div><div class="val mono">${fmtMoney(r.saldo_a_favor)}</div></div>
+      <div class="kpi"><div class="lbl">Gastos</div><div class="val mono">${fmtMoney(r.gastos)}</div></div>
+      <div class="kpi saldo ${saldo<0?'neg':'pos'}"><div class="lbl">Saldo disponible</div><div class="val mono">${fmtMoney(saldo)}</div></div>
+    </div></div>`;
+
+  const g=d.gastos||{filas:[]};
+  const gFilas=g.filas.map(x=>`<tr>
+      <td>${escapeHtml(x.fecha||'')}</td>
+      <td style="text-align:left">${escapeHtml(x.actividad||'')}<div class="muted" style="font-size:11px">${escapeHtml(x.descripcion||'')}</div></td>
+      <td>${fmtMoney(x.monto)}</td>
+    </tr>`).join('');
+  html+=`<div class="fin-card"><h3>Gastos por actividad <span class="muted" style="font-weight:400;font-size:13px">· ${g.filas.length} registros</span></h3>
+    <div class="fin-tabla-wrap"><table class="fin">
+      <thead><tr><th>Fecha</th><th style="text-align:left">Actividad</th><th>Monto</th></tr></thead>
+      <tbody>${gFilas}
+        <tr class="tot"><td>Total</td><td></td><td>${fmtMoney(g.total)}</td></tr>
+      </tbody>
+    </table></div></div>`;
+
+  document.getElementById('finContenido').innerHTML=html;
+}
 
 /* Restaurar sesión si ya había iniciado antes (no vuelve a pedir login al recargar) */
 sb.auth.getSession().then(({ data })=>{ if(data && data.session) abrirApp(data.session.user); });
