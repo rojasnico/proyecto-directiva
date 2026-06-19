@@ -12,15 +12,16 @@
 
 <style>
   :root{
-    --papel:#FBF8F1; --papel-2:#F3EEE3; --tinta:#1C2A45; --tinta-suave:#51607C;
-    --copihue:#C5342B; --oro:#D8972C; --verde:#2E7D5B; --linea:#E2DACB; --linea-fuerte:#CFC4AD;
-    --sombra:0 1px 2px rgba(28,42,69,.06), 0 8px 24px rgba(28,42,69,.07); --radio:14px;
+    --papel:#F4F5FB; --papel-2:#E8EAF6; --tinta:#23286B; --tinta-suave:#5A6098;
+    --azul:#2E3192; --copihue:#E2231A; --oro:#D8972C; --verde:#2E7D5B;
+    --linea:#DCDFEF; --linea-fuerte:#C2C6E2;
+    --sombra:0 1px 2px rgba(35,40,107,.07), 0 8px 24px rgba(35,40,107,.09); --radio:14px;
   }
   *{ box-sizing:border-box; }
   html,body{ margin:0; }
   body{
     font-family:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background:radial-gradient(120% 90% at 100% 0%, #FFFDF8 0%, var(--papel) 55%) fixed;
+    background:radial-gradient(120% 90% at 100% 0%, #FFFFFF 0%, var(--papel) 55%) fixed;
     color:var(--tinta); line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh;
   }
   .mono{ font-family:"JetBrains Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums; }
@@ -29,12 +30,9 @@
   .login-card{ width:100%; max-width:380px; background:#fff; border:1px solid var(--linea);
     border-radius:var(--radio); box-shadow:var(--sombra); padding:34px 30px 30px; }
   .mark{ display:flex; align-items:center; gap:11px; margin-bottom:22px; }
-  .mark .dot{ width:30px; height:30px; border-radius:9px; overflow:hidden; display:flex; flex-direction:column;
-    box-shadow:0 1px 3px rgba(0,0,0,.15); flex:none; }
-  .mark .dot i{ display:block; }
-  .mark .dot .azul{ background:var(--tinta); height:42%; }
-  .mark .dot .blanco{ background:#fff; height:29%; }
-  .mark .dot .rojo{ background:var(--copihue); height:29%; }
+  .mark .escudo{ height:38px; width:auto; flex:none; display:block;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+  .login-card .mark .escudo{ height:52px; }
   .mark b{ font-family:"Fraunces", serif; font-weight:600; font-size:18px; letter-spacing:-.01em; }
   .login-card h1{ font-family:"Fraunces", serif; font-weight:600; font-size:25px; line-height:1.15;
     letter-spacing:-.02em; margin:0 0 6px; }
@@ -138,6 +136,33 @@
   .foot{ text-align:center; color:var(--tinta-suave); font-size:12.5px; margin-top:30px; }
   .foot a{ color:var(--tinta); }
 
+  /* Próximos eventos ("Lo que se viene") */
+  .proximos{ display:flex; flex-direction:column; gap:10px; margin-bottom:6px; }
+  .prox{ display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--linea);
+    border-radius:12px; box-shadow:var(--sombra); padding:12px 16px; }
+  .prox.hoy{ border-color:var(--copihue); }
+  .prox-date{ flex:none; width:52px; text-align:center; border-right:1px solid var(--linea); padding-right:12px; }
+  .prox-dnum{ font-family:"Fraunces",serif; font-weight:700; font-size:24px; line-height:1; color:var(--azul); }
+  .prox-dmon{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--tinta-suave); }
+  .prox-body{ flex:1; min-width:0; }
+  .prox-top{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .prox-top b{ font-size:15px; }
+  .prox-meta{ font-size:12.5px; color:var(--tinta-suave); margin-top:2px; }
+  .chip{ font-size:11px; font-weight:600; border:1px solid var(--linea-fuerte); border-radius:999px;
+    padding:2px 9px; background:var(--papel); white-space:nowrap; }
+  .prox-cuando{ flex:none; font-weight:700; color:var(--azul); font-size:14px; }
+  .prox.hoy .prox-cuando{ color:var(--copihue); }
+  .vacio{ background:#fff; border:1px dashed var(--linea-fuerte); border-radius:12px; padding:18px;
+    text-align:center; color:var(--tinta-suave); font-size:13.5px; }
+  /* Nombre de evento editable + borrar evento */
+  .evt-name{ font-family:"Fraunces",serif; font-weight:600; font-size:18px; letter-spacing:-.01em;
+    color:var(--tinta); border:1px solid transparent; background:transparent; flex:1; min-width:0;
+    padding:3px 6px; border-radius:7px; }
+  .evt-name:hover{ background:var(--papel); }
+  .card .top .del{ flex:none; background:none; border:none; cursor:pointer; color:var(--tinta-suave);
+    font-size:18px; line-height:1; border-radius:8px; padding:4px 7px; }
+  .card .top .del:hover{ background:#FCEBEA; color:var(--copihue); }
+
   @media (max-width:760px){
     .grid{ grid-template-columns:1fr; } .kpis{ grid-template-columns:1fr; }
     .bar .who{ font-size:12px; } main{ padding:20px 16px 60px; }
@@ -151,7 +176,22 @@
 <div class="login-wrap" id="login">
   <div class="login-card">
     <div class="mark">
-      <span class="dot"><i class="azul"></i><i class="blanco"></i><i class="rojo"></i></span>
+      <svg class="escudo" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Escudo Maristas Santiago">
+        <defs><clipPath id="escClipA"><path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z"/></clipPath></defs>
+        <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="#fff"/>
+        <g clip-path="url(#escClipA)">
+          <rect x="0" y="0" width="120" height="150" fill="#2E3192"/>
+          <rect x="0" y="0" width="120" height="33" fill="#fff"/>
+          <path d="M0,33 Q60,45 120,33 L120,39 Q60,51 0,39 Z" fill="#E2231A"/>
+          <text x="60" y="25" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" letter-spacing="0.5" fill="#E2231A">MARISTAS</text>
+          <g fill="#fff" font-size="8" font-family="Arial,sans-serif" text-anchor="middle">
+            <text x="18" y="64">★</text><text x="26.4" y="61">★</text><text x="34.8" y="59">★</text><text x="43.2" y="57.3">★</text><text x="51.6" y="56.3">★</text><text x="60" y="56">★</text><text x="68.4" y="56.3">★</text><text x="76.8" y="57.3">★</text><text x="85.2" y="59">★</text><text x="93.6" y="61">★</text><text x="102" y="64">★</text>
+          </g>
+          <text x="60" y="109" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" letter-spacing="-2" fill="#fff">MJM</text>
+          <text x="60" y="130" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="14" fill="#fff">Santiago</text>
+        </g>
+        <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="none" stroke="#2E3192" stroke-width="2"/>
+      </svg>
       <b>Directiva de Curso</b>
     </div>
     <h1>Panel de eventos y fondos</h1>
@@ -175,7 +215,22 @@
   <header class="bar">
     <div class="bar-in">
       <span class="mark" style="margin:0">
-        <span class="dot"><i class="azul"></i><i class="blanco"></i><i class="rojo"></i></span>
+        <svg class="escudo" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Escudo Maristas Santiago">
+          <defs><clipPath id="escClipB"><path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z"/></clipPath></defs>
+          <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="#fff"/>
+          <g clip-path="url(#escClipB)">
+            <rect x="0" y="0" width="120" height="150" fill="#2E3192"/>
+            <rect x="0" y="0" width="120" height="33" fill="#fff"/>
+            <path d="M0,33 Q60,45 120,33 L120,39 Q60,51 0,39 Z" fill="#E2231A"/>
+            <text x="60" y="25" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" letter-spacing="0.5" fill="#E2231A">MARISTAS</text>
+            <g fill="#fff" font-size="8" font-family="Arial,sans-serif" text-anchor="middle">
+              <text x="18" y="64">★</text><text x="26.4" y="61">★</text><text x="34.8" y="59">★</text><text x="43.2" y="57.3">★</text><text x="51.6" y="56.3">★</text><text x="60" y="56">★</text><text x="68.4" y="56.3">★</text><text x="76.8" y="57.3">★</text><text x="85.2" y="59">★</text><text x="93.6" y="61">★</text><text x="102" y="64">★</text>
+            </g>
+            <text x="60" y="109" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" letter-spacing="-2" fill="#fff">MJM</text>
+            <text x="60" y="130" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="14" fill="#fff">Santiago</text>
+          </g>
+          <path d="M14,5 H106 Q115,5 115,14 V90 C115,116 92,133 60,147 C28,133 5,116 5,90 V14 Q5,5 14,5 Z" fill="none" stroke="#2E3192" stroke-width="2"/>
+        </svg>
         <b>Directiva de Curso</b>
       </span>
       <div class="who">
@@ -187,6 +242,12 @@
 
   <main>
     <div class="banner" id="banner"></div>
+
+    <h2 class="sec">Lo que se viene</h2>
+    <p class="sec-note">Próximos eventos con fecha, ordenados por cercanía.</p>
+    <div class="proximos" id="proximos"></div>
+
+    <div class="tricolor"></div>
 
     <h2 class="sec">Fondos de la directiva
       <button class="stale" id="stale">↻ Hay cambios nuevos · Actualizar</button>
@@ -214,6 +275,7 @@
     <h2 class="sec">Eventos <span class="saved" id="savedTag">✓ Guardado</span></h2>
     <p class="sec-note">Fija fecha, responsable, meta y avance de cada actividad. Los cambios se guardan solos.</p>
     <div class="grid" id="eventos"></div>
+    <button class="btn ghost sm add-d" id="addEvento" style="margin-top:14px">+ Agregar evento</button>
 
     <p class="foot">Última actualización: <span id="updInfo">—</span> · <a href="#" id="refrescar">Actualizar datos</a></p>
   </main>
@@ -351,7 +413,40 @@ const totalRec  = () => state.eventos.reduce((s,e)=>s+(Number(e.recaudado)||0),0
 const totalAsig = () => state.destinos.reduce((s,d)=>s+(Number(d.monto)||0),0);
 
 /* ---------- Render ---------- */
-function render(){ renderFondos(); renderEventos(); updInfo(); }
+function render(){ renderProximos(); renderFondos(); renderEventos(); updInfo(); }
+
+function renderProximos(){
+  const cont=document.getElementById('proximos'); cont.innerHTML="";
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const items = state.eventos
+    .filter(e=>e.fecha)
+    .map(e=>({ e, d:new Date(e.fecha+'T00:00:00') }))
+    .filter(o=>!isNaN(o.d) && o.d>=hoy)
+    .sort((a,b)=>a.d-b.d);
+  if(!items.length){
+    cont.innerHTML=`<div class="vacio">No hay eventos próximos con fecha. Ponle fecha a tus eventos y aparecerán aquí ordenados.</div>`;
+    return;
+  }
+  items.forEach(({e,d})=>{
+    const dias=Math.round((d-hoy)/86400000);
+    const cuando = dias===0?'¡Hoy!' : dias===1?'Mañana' : `En ${dias} días`;
+    const corto  = dias===0?'hoy' : dias===1?'1 día' : dias+' días';
+    const est=ESTADOS.find(s=>s.v===e.estado)||ESTADOS[0];
+    const pct=e.meta>0?Math.min(100,Math.round(e.recaudado/e.meta*100)):0;
+    const row=document.createElement('div'); row.className="prox"+(dias===0?' hoy':'');
+    row.innerHTML=`
+      <div class="prox-date">
+        <div class="prox-dnum">${d.getDate()}</div>
+        <div class="prox-dmon">${d.toLocaleDateString('es-CL',{month:'short'})}</div>
+      </div>
+      <div class="prox-body">
+        <div class="prox-top"><b>${escapeHtml(e.nombre)||'Sin nombre'}</b><span class="chip">${est.t}</span></div>
+        <div class="prox-meta">${cuando}${e.responsable?' · '+escapeHtml(e.responsable):''}${e.meta>0?' · '+fmtMoney(e.recaudado)+' de '+fmtMoney(e.meta)+' ('+pct+'%)':''}</div>
+      </div>
+      <div class="prox-cuando mono">${corto}</div>`;
+    cont.appendChild(row);
+  });
+}
 
 function renderFondos(){
   const rec = totalRec(), asig = totalAsig(), saldo = rec - asig;
@@ -422,10 +517,11 @@ function renderEventos(){
     card.innerHTML=`
       <div class="top">
         <div class="num">${idx+1}</div>
-        <h3>${escapeHtml(e.nombre)}</h3>
+        <input class="evt-name" value="${escapeAttr(e.nombre)}" placeholder="Nombre del evento" data-id="${e.id}" data-f="nombre" />
         <select class="estado ${est.c}" data-id="${e.id}" data-f="estado">
           ${ESTADOS.map(s=>`<option value="${s.v}" ${s.v===e.estado?'selected':''}>${s.t}</option>`).join('')}
         </select>
+        <button class="del" title="Eliminar evento" data-delev="${e.id}">🗑</button>
       </div>
       <div class="two">
         <div class="mini"><label>Fecha</label>
@@ -458,9 +554,31 @@ function renderEventos(){
       if(f==='estado'){ const e=state.eventos.find(x=>x.id===id);
         inp.className="estado "+(ESTADOS.find(s=>s.v===e.estado)?.c||''); }
       if(f==='meta'||f==='recaudado'){ refreshCardProgress(id); renderFondos(); }
+      renderProximos();
     });
   });
+  cont.querySelectorAll('[data-delev]').forEach(b=>{ b.onclick=()=>delEvento(Number(b.dataset.delev)); });
 }
+async function addEvento(){
+  const nombre = prompt("Nombre del nuevo evento:", "");
+  if(nombre===null) return;
+  lastWrite = Date.now();
+  const orden = state.eventos.reduce((m,e)=>Math.max(m, e.orden||0), 0) + 1;
+  const { data, error } = await sb.from('eventos')
+    .insert({ nombre:(nombre.trim()||"Nuevo evento"), estado:'plan', orden, updated_by:sesion })
+    .select().single();
+  if(error){ banner("No se pudo crear el evento."); console.error(error); return; }
+  state.eventos.push(data); render();
+}
+async function delEvento(id){
+  const e = state.eventos.find(x=>x.id===id);
+  if(!confirm(`¿Eliminar el evento "${e?.nombre||'sin nombre'}"? Esta acción no se puede deshacer.`)) return;
+  lastWrite = Date.now();
+  state.eventos = state.eventos.filter(x=>x.id!==id); render();
+  const { error } = await sb.from('eventos').delete().eq('id', id);
+  if(error){ banner("No se pudo eliminar el evento."); console.error(error); reload().then(render); }
+}
+document.getElementById('addEvento').onclick = addEvento;
 function refreshCardProgress(id){
   const idx=state.eventos.findIndex(x=>x.id===id); const e=state.eventos[idx];
   const card=document.querySelectorAll('#eventos .card')[idx]; if(!card||!e) return;
