@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Directiva de Curso — Eventos y Fondos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<!-- Cliente de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  :root{
+    --papel:#FBF8F1; --papel-2:#F3EEE3; --tinta:#1C2A45; --tinta-suave:#51607C;
+    --copihue:#C5342B; --oro:#D8972C; --verde:#2E7D5B; --linea:#E2DACB; --linea-fuerte:#CFC4AD;
+    --sombra:0 1px 2px rgba(28,42,69,.06), 0 8px 24px rgba(28,42,69,.07); --radio:14px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    font-family:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background:radial-gradient(120% 90% at 100% 0%, #FFFDF8 0%, var(--papel) 55%) fixed;
+    color:var(--tinta); line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  .mono{ font-family:"JetBrains Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+
+  .login-wrap{ min-height:100vh; display:grid; place-items:center; padding:24px; }
+  .login-card{ width:100%; max-width:380px; background:#fff; border:1px solid var(--linea);
+    border-radius:var(--radio); box-shadow:var(--sombra); padding:34px 30px 30px; }
+  .mark{ display:flex; align-items:center; gap:11px; margin-bottom:22px; }
+  .mark .dot{ width:30px; height:30px; border-radius:9px; overflow:hidden; display:flex; flex-direction:column;
+    box-shadow:0 1px 3px rgba(0,0,0,.15); flex:none; }
+  .mark .dot i{ display:block; }
+  .mark .dot .azul{ background:var(--tinta); height:42%; }
+  .mark .dot .blanco{ background:#fff; height:29%; }
+  .mark .dot .rojo{ background:var(--copihue); height:29%; }
+  .mark b{ font-family:"Fraunces", serif; font-weight:600; font-size:18px; letter-spacing:-.01em; }
+  .login-card h1{ font-family:"Fraunces", serif; font-weight:600; font-size:25px; line-height:1.15;
+    letter-spacing:-.02em; margin:0 0 6px; }
+  .login-card p.sub{ margin:0 0 22px; color:var(--tinta-suave); font-size:14px; }
+  label{ display:block; font-size:12.5px; font-weight:600; color:var(--tinta-suave);
+    text-transform:uppercase; letter-spacing:.04em; margin:0 0 6px; }
+  .field{ margin-bottom:16px; }
+  input[type=text], input[type=password], input[type=date], input[type=number], select, textarea{
+    width:100%; font:inherit; color:var(--tinta); background:var(--papel);
+    border:1px solid var(--linea-fuerte); border-radius:10px; padding:10px 12px;
+    transition:border-color .15s, box-shadow .15s; }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--tinta);
+    box-shadow:0 0 0 3px rgba(28,42,69,.12); background:#fff; }
+  .btn{ font:inherit; font-weight:600; cursor:pointer; border:none; border-radius:10px;
+    padding:11px 16px; background:var(--tinta); color:#fff; transition:transform .06s, background .15s; }
+  .btn:hover{ background:#13203a; } .btn:active{ transform:translateY(1px); }
+  .btn.block{ width:100%; }
+  .btn.ghost{ background:transparent; color:var(--tinta); border:1px solid var(--linea-fuerte); }
+  .btn.ghost:hover{ background:var(--papel-2); }
+  .btn.sm{ padding:7px 12px; font-size:13px; }
+  .err{ color:var(--copihue); font-size:13px; min-height:18px; margin:-4px 0 12px; font-weight:500; }
+  .hint{ font-size:12px; color:var(--tinta-suave); margin-top:14px; line-height:1.5; }
+
+  .app{ display:none; }
+  header.bar{ position:sticky; top:0; z-index:10; background:rgba(251,248,241,.85);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--linea); }
+  .bar-in{ max-width:1080px; margin:0 auto; padding:14px 22px; display:flex; align-items:center; gap:14px; }
+  .bar .who{ margin-left:auto; font-size:13px; color:var(--tinta-suave); text-align:right; }
+  .bar .who b{ color:var(--tinta); }
+  main{ max-width:1080px; margin:0 auto; padding:26px 22px 70px; }
+
+  .tricolor{ height:3px; border-radius:3px; background:linear-gradient(90deg,
+     var(--tinta) 0 38%, #fff 38% 62%, var(--copihue) 62% 100%); margin:18px 0 26px; }
+
+  h2.sec{ font-family:"Fraunces", serif; font-weight:600; font-size:20px; letter-spacing:-.01em;
+    margin:0 0 4px; display:flex; align-items:center; gap:10px; }
+  .sec-note{ color:var(--tinta-suave); font-size:13.5px; margin:0 0 16px; }
+
+  .fondos{ background:#fff; border:1px solid var(--linea); border-radius:var(--radio);
+    box-shadow:var(--sombra); padding:22px; margin-bottom:14px; }
+  .kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+  .kpi{ background:var(--papel); border:1px solid var(--linea); border-radius:12px; padding:14px 16px; }
+  .kpi .lbl{ font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--tinta-suave); }
+  .kpi .val{ font-size:24px; font-weight:700; margin-top:4px; letter-spacing:-.01em; }
+  .kpi.saldo.neg .val{ color:var(--copihue); }
+  .kpi.saldo.pos .val{ color:var(--verde); }
+
+  .alloc-title{ font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--tinta-suave); margin-bottom:9px; }
+  .alloc-bar{ display:flex; height:30px; border-radius:9px; overflow:hidden; background:var(--papel-2);
+    border:1px solid var(--linea); }
+  .alloc-seg{ height:100%; min-width:2px; position:relative; }
+  .alloc-seg .tip{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; padding:0 4px;
+    text-shadow:0 1px 1px rgba(0,0,0,.25); }
+  .alloc-legend{ display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
+  .leg{ display:flex; align-items:center; gap:7px; font-size:13px; }
+  .leg .sw{ width:11px; height:11px; border-radius:3px; flex:none; }
+  .leg b.mono{ font-weight:700; }
+
+  .destinos{ margin-top:22px; border-top:1px dashed var(--linea-fuerte); padding-top:18px; }
+  .drow{ display:grid; grid-template-columns:1fr 160px 36px; gap:10px; margin-bottom:9px; align-items:center; }
+  .drow .x{ background:none; border:none; cursor:pointer; color:var(--tinta-suave); font-size:18px; line-height:1;
+    border-radius:8px; padding:6px; }
+  .drow .x:hover{ background:var(--papel-2); color:var(--copihue); }
+  .add-d{ margin-top:6px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .card{ background:#fff; border:1px solid var(--linea); border-radius:var(--radio);
+    box-shadow:var(--sombra); padding:18px 18px 16px; display:flex; flex-direction:column; }
+  .card .top{ display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; }
+  .card .num{ font-family:"Fraunces",serif; font-weight:600; color:var(--linea-fuerte); font-size:26px;
+    line-height:1; flex:none; width:34px; }
+  .card h3{ font-family:"Fraunces", serif; font-weight:600; font-size:18px; letter-spacing:-.01em; margin:0; flex:1; }
+  .estado{ font:inherit; font-size:12px; font-weight:600; border:1px solid var(--linea-fuerte);
+    border-radius:999px; padding:4px 10px 4px 22px; background-position:9px center; background-repeat:no-repeat;
+    background-image:radial-gradient(circle, currentColor 3px, transparent 3.5px); cursor:pointer; appearance:none;
+    background-color:var(--papel); }
+  .e-plan{ color:var(--tinta-suave); } .e-prep{ color:var(--oro); }
+  .e-conf{ color:var(--tinta); } .e-real{ color:var(--verde); }
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-bottom:11px; }
+  .mini label{ margin-bottom:5px; }
+  .progress{ margin-top:auto; }
+  .prog-nums{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; margin-bottom:6px; }
+  .prog-nums .recaudado{ font-weight:700; }
+  .prog-nums .meta{ color:var(--tinta-suave); }
+  .track{ height:8px; background:var(--papel-2); border-radius:99px; overflow:hidden; border:1px solid var(--linea); }
+  .fill{ height:100%; background:linear-gradient(90deg, var(--oro), var(--copihue)); border-radius:99px; transition:width .3s; }
+  textarea{ resize:vertical; min-height:40px; }
+
+  .saved{ font-size:12px; color:var(--verde); opacity:0; transition:opacity .3s; font-weight:600; }
+  .saved.show{ opacity:1; }
+  .stale{ display:none; margin-left:auto; font-size:12.5px; background:var(--oro); color:#3a2a08;
+    border:none; border-radius:99px; padding:6px 12px; font-weight:600; cursor:pointer; }
+  .stale.show{ display:inline-block; }
+
+  .banner{ display:none; background:#FCEBEA; border:1px solid var(--copihue); color:#7d1f1a;
+    border-radius:10px; padding:11px 14px; font-size:13.5px; margin-bottom:16px; }
+  .banner.show{ display:block; }
+
+  .foot{ text-align:center; color:var(--tinta-suave); font-size:12.5px; margin-top:30px; }
+  .foot a{ color:var(--tinta); }
+
+  @media (max-width:760px){
+    .grid{ grid-template-columns:1fr; } .kpis{ grid-template-columns:1fr; }
+    .bar .who{ font-size:12px; } main{ padding:20px 16px 60px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="login-wrap" id="login">
+  <div class="login-card">
+    <div class="mark">
+      <span class="dot"><i class="azul"></i><i class="blanco"></i><i class="rojo"></i></span>
+      <b>Directiva de Curso</b>
+    </div>
+    <h1>Panel de eventos y fondos</h1>
+    <p class="sub">Ingresa para revisar y actualizar la planificación de la directiva.</p>
+    <div class="field">
+      <label for="nombre">Tu nombre</label>
+      <input type="text" id="nombre" placeholder="Ej: Carolina Pérez" autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="codigo">Código de acceso</label>
+      <input type="password" id="codigo" placeholder="Código compartido" autocomplete="off" />
+    </div>
+    <div class="err" id="loginErr"></div>
+    <button class="btn block" id="entrar">Ingresar</button>
+    <p class="hint">Tu nombre queda registrado en cada cambio. El código es compartido por toda la directiva.</p>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div class="app" id="app">
+  <header class="bar">
+    <div class="bar-in">
+      <span class="mark" style="margin:0">
+        <span class="dot"><i class="azul"></i><i class="blanco"></i><i class="rojo"></i></span>
+        <b>Directiva de Curso</b>
+      </span>
+      <div class="who">
+        <div>Sesión: <b id="sesionNombre"></b></div>
+        <button class="btn ghost sm" id="salir" style="margin-top:4px">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="banner" id="banner"></div>
+
+    <h2 class="sec">Fondos de la directiva
+      <button class="stale" id="stale">↻ Hay cambios nuevos · Actualizar</button>
+    </h2>
+    <p class="sec-note">Lo recaudado en cada evento se junta aquí. Abajo defines cómo se reparten esos fondos.</p>
+
+    <div class="fondos">
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Total recaudado</div><div class="val mono" id="kpiRec">$0</div></div>
+        <div class="kpi"><div class="lbl">Asignado a destinos</div><div class="val mono" id="kpiAsig">$0</div></div>
+        <div class="kpi saldo" id="kpiSaldoBox"><div class="lbl">Por asignar</div><div class="val mono" id="kpiSaldo">$0</div></div>
+      </div>
+      <div class="alloc-title">¿Cómo dirigimos los fondos?</div>
+      <div class="alloc-bar" id="allocBar"></div>
+      <div class="alloc-legend" id="allocLegend"></div>
+      <div class="destinos">
+        <div class="alloc-title" style="margin-bottom:11px">Destinos de los fondos</div>
+        <div id="destinosList"></div>
+        <button class="btn ghost sm add-d" id="addDestino">+ Agregar destino</button>
+      </div>
+    </div>
+
+    <div class="tricolor"></div>
+
+    <h2 class="sec">Eventos <span class="saved" id="savedTag">✓ Guardado</span></h2>
+    <p class="sec-note">Fija fecha, responsable, meta y avance de cada actividad. Los cambios se guardan solos.</p>
+    <div class="grid" id="eventos"></div>
+
+    <p class="foot">Última actualización: <span id="updInfo">—</span> · <a href="#" id="refrescar">Actualizar datos</a></p>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   CONEXIÓN A SUPABASE  (estos valores son públicos, es normal
+   que queden en el código de una página estática)
+============================================================ */
+const SUPABASE_URL = "https://tljzrwvbuendyenwmqph.supabase.co";
+const SUPABASE_KEY = "sb_publishable_k8ceN2Y93iGF1jCd0KqIig_ryTZAFSc";
+
+/* Código de acceso compartido. Cámbialo cuando quieras. */
+const CODIGO_ACCESO = "curso2026";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ---------- Formato chileno ---------- */
+const CLP = new Intl.NumberFormat('es-CL', { style:'currency', currency:'CLP', maximumFractionDigits:0 });
+const fmtMoney = n => CLP.format(Math.round(Number(n)||0));
+const ESTADOS = [
+  {v:"plan", t:"Por planificar", c:"e-plan"},
+  {v:"prep", t:"En preparación", c:"e-prep"},
+  {v:"conf", t:"Confirmado",     c:"e-conf"},
+  {v:"real", t:"Realizado",      c:"e-real"},
+];
+const COLORS = ["#1C2A45","#C5342B","#D8972C","#2E7D5B","#6C5CE7","#0E7C86","#B05A1E","#8E44AD"];
+
+let state = { eventos:[], destinos:[] };
+let sesion = "";
+let pending = false;       // hay cambios remotos sin aplicar (mientras editas)
+let lastWrite = 0;         // para ignorar el "eco" de tus propios cambios
+
+/* ---------- Login ---------- */
+document.getElementById('entrar').onclick = entrar;
+document.getElementById('codigo').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
+document.getElementById('nombre').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('codigo').focus(); });
+
+async function entrar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  const cod = document.getElementById('codigo').value;
+  const err = document.getElementById('loginErr');
+  if(!nombre){ err.textContent="Escribe tu nombre para continuar."; return; }
+  if(cod !== CODIGO_ACCESO){ err.textContent="Código incorrecto. Pídelo a la directiva."; return; }
+  err.textContent=""; sesion = nombre;
+  document.getElementById('sesionNombre').textContent = nombre;
+  document.getElementById('login').style.display="none";
+  document.getElementById('app').style.display="block";
+  await reload(); render(); suscribir();
+}
+document.getElementById('salir').onclick = ()=>{
+  sesion=""; document.getElementById('codigo').value="";
+  document.getElementById('app').style.display="none";
+  document.getElementById('login').style.display="grid";
+};
+document.getElementById('refrescar').onclick = async e=>{ e.preventDefault(); await reload(); render(); };
+document.getElementById('stale').onclick = async ()=>{ await reload(); render(); hideStale(); };
+
+/* ---------- Lectura desde la base de datos ---------- */
+async function reload(){
+  const [ev, de] = await Promise.all([
+    sb.from('eventos').select('*').order('orden'),
+    sb.from('destinos').select('*').order('orden'),
+  ]);
+  if(ev.error || de.error){
+    banner("No se pudo conectar con la base de datos. Revisa tu conexión y vuelve a intentar.");
+    console.error(ev.error || de.error); return;
+  }
+  banner(false);
+  state.eventos = ev.data || [];
+  state.destinos = de.data || [];
+}
+
+/* ---------- Escrituras ---------- */
+async function updateEvento(id, patch){
+  patch.updated_at = new Date().toISOString(); patch.updated_by = sesion; lastWrite = Date.now();
+  const e = state.eventos.find(x=>x.id===id); if(e) Object.assign(e, patch);
+  const { error } = await sb.from('eventos').update(patch).eq('id', id);
+  if(error){ banner("No se pudo guardar el cambio. Intenta de nuevo."); console.error(error); }
+  else { flashSaved(); updInfo(); }
+}
+async function updateDestino(id, patch){
+  patch.updated_at = new Date().toISOString(); patch.updated_by = sesion; lastWrite = Date.now();
+  const d = state.destinos.find(x=>x.id===id); if(d) Object.assign(d, patch);
+  const { error } = await sb.from('destinos').update(patch).eq('id', id);
+  if(error){ banner("No se pudo guardar el destino."); console.error(error); }
+  else { flashSaved(); updInfo(); }
+}
+async function addDestino(){
+  lastWrite = Date.now();
+  const orden = state.destinos.reduce((m,d)=>Math.max(m, d.orden||0), 0) + 1;
+  const { data, error } = await sb.from('destinos')
+    .insert({ nombre:"", monto:0, orden, updated_by:sesion }).select().single();
+  if(error){ banner("No se pudo agregar el destino."); console.error(error); return; }
+  state.destinos.push(data); renderFondos();
+}
+async function delDestino(id){
+  lastWrite = Date.now();
+  state.destinos = state.destinos.filter(x=>x.id!==id); renderFondos();
+  const { error } = await sb.from('destinos').delete().eq('id', id);
+  if(error){ banner("No se pudo eliminar el destino."); console.error(error); }
+}
+
+/* ---------- Tiempo real ---------- */
+function suscribir(){
+  sb.channel('directiva')
+    .on('postgres_changes', { event:'*', schema:'public', table:'eventos'  }, alCambiarRemoto)
+    .on('postgres_changes', { event:'*', schema:'public', table:'destinos' }, alCambiarRemoto)
+    .subscribe();
+}
+function alCambiarRemoto(){
+  if(Date.now() - lastWrite < 1500) return;            // es el eco de tu propio cambio
+  const ae = document.activeElement;
+  const editando = ae && ['INPUT','TEXTAREA','SELECT'].includes(ae.tagName);
+  if(editando){ pending = true; showStale(); }          // no interrumpir lo que estás escribiendo
+  else { reload().then(render); }
+}
+function showStale(){ document.getElementById('stale').classList.add('show'); }
+function hideStale(){ pending=false; document.getElementById('stale').classList.remove('show'); }
+
+/* ---------- Cálculos ---------- */
+const totalRec  = () => state.eventos.reduce((s,e)=>s+(Number(e.recaudado)||0),0);
+const totalAsig = () => state.destinos.reduce((s,d)=>s+(Number(d.monto)||0),0);
+
+/* ---------- Render ---------- */
+function render(){ renderFondos(); renderEventos(); updInfo(); }
+
+function renderFondos(){
+  const rec = totalRec(), asig = totalAsig(), saldo = rec - asig;
+  document.getElementById('kpiRec').textContent  = fmtMoney(rec);
+  document.getElementById('kpiAsig').textContent = fmtMoney(asig);
+  document.getElementById('kpiSaldo').textContent= fmtMoney(saldo);
+  const box = document.getElementById('kpiSaldoBox');
+  box.classList.toggle('neg', saldo<0); box.classList.toggle('pos', saldo>0);
+
+  const bar = document.getElementById('allocBar'); bar.innerHTML="";
+  const leg = document.getElementById('allocLegend'); leg.innerHTML="";
+  const base = Math.max(rec, asig, 1);
+  state.destinos.forEach((d,i)=>{
+    const m = Number(d.monto)||0; if(m<=0) return;
+    const seg = document.createElement('div'); seg.className="alloc-seg";
+    seg.style.width=(m/base*100)+"%"; seg.style.background=COLORS[i%COLORS.length];
+    const pct = rec>0 ? Math.round(m/rec*100) : 0;
+    seg.innerHTML = `<span class="tip">${pct>7?pct+'%':''}</span>`;
+    seg.title = `${d.nombre}: ${fmtMoney(m)}`; bar.appendChild(seg);
+    const l = document.createElement('div'); l.className="leg";
+    l.innerHTML = `<span class="sw" style="background:${COLORS[i%COLORS.length]}"></span>
+      <span>${escapeHtml(d.nombre||'Sin nombre')}</span> · <b class="mono">${fmtMoney(m)}</b>`;
+    leg.appendChild(l);
+  });
+  if(rec > asig){
+    const seg=document.createElement('div'); seg.className="alloc-seg";
+    seg.style.width=((rec-asig)/base*100)+"%";
+    seg.style.background="repeating-linear-gradient(45deg,#E2DACB 0 6px,#EFE9DC 6px 12px)";
+    seg.title=`Sin asignar: ${fmtMoney(rec-asig)}`; bar.appendChild(seg);
+  }
+  if(asig===0 && rec===0) bar.innerHTML=`<div class="alloc-seg" style="width:100%;background:var(--papel-2)"></div>`;
+  if(asig>rec){
+    const w=document.createElement('div'); w.className="leg";
+    w.innerHTML=`<span style="color:var(--copihue);font-weight:600">⚠ Asignado supera lo recaudado por ${fmtMoney(asig-rec)}</span>`;
+    leg.appendChild(w);
+  }
+  renderDestinos();
+}
+
+function renderDestinos(){
+  const cont=document.getElementById('destinosList'); cont.innerHTML="";
+  state.destinos.forEach(d=>{
+    const row=document.createElement('div'); row.className="drow";
+    row.innerHTML=`
+      <input type="text" value="${escapeAttr(d.nombre)}" placeholder="Destino (ej: Paseo de curso)" data-id="${d.id}" data-f="nombre" />
+      <input type="number" class="mono" value="${d.monto||0}" min="0" step="1000" data-id="${d.id}" data-f="monto" />
+      <button class="x" title="Eliminar" data-del="${d.id}">×</button>`;
+    cont.appendChild(row);
+  });
+  cont.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const f=inp.dataset.f;
+      const val = f==='monto' ? (Number(inp.value)||0) : inp.value;
+      updateDestino(inp.dataset.id, { [f]: val });
+      renderFondos();
+    });
+  });
+  cont.querySelectorAll('[data-del]').forEach(b=>{ b.onclick=()=>delDestino(b.dataset.del); });
+}
+document.getElementById('addDestino').onclick = addDestino;
+
+function renderEventos(){
+  const cont=document.getElementById('eventos'); cont.innerHTML="";
+  state.eventos.forEach((e,idx)=>{
+    const est=ESTADOS.find(s=>s.v===e.estado)||ESTADOS[0];
+    const pct=e.meta>0?Math.min(100,Math.round(e.recaudado/e.meta*100)):0;
+    const card=document.createElement('div'); card.className="card";
+    card.innerHTML=`
+      <div class="top">
+        <div class="num">${idx+1}</div>
+        <h3>${escapeHtml(e.nombre)}</h3>
+        <select class="estado ${est.c}" data-id="${e.id}" data-f="estado">
+          ${ESTADOS.map(s=>`<option value="${s.v}" ${s.v===e.estado?'selected':''}>${s.t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="two">
+        <div class="mini"><label>Fecha</label>
+          <input type="date" value="${e.fecha||''}" data-id="${e.id}" data-f="fecha" /></div>
+        <div class="mini"><label>Responsable</label>
+          <input type="text" value="${escapeAttr(e.responsable)}" placeholder="¿Quién coordina?" data-id="${e.id}" data-f="responsable" /></div>
+      </div>
+      <div class="two">
+        <div class="mini"><label>Meta de recaudación</label>
+          <input type="number" class="mono" value="${e.meta||0}" min="0" step="5000" data-id="${e.id}" data-f="meta" /></div>
+        <div class="mini"><label>Recaudado</label>
+          <input type="number" class="mono" value="${e.recaudado||0}" min="0" step="5000" data-id="${e.id}" data-f="recaudado" /></div>
+      </div>
+      <div class="mini" style="margin-bottom:12px"><label>Notas</label>
+        <textarea data-id="${e.id}" data-f="notas" placeholder="Acuerdos, pendientes, gastos...">${escapeHtml(e.notas)}</textarea></div>
+      <div class="progress">
+        <div class="prog-nums">
+          <span class="recaudado mono">${fmtMoney(e.recaudado)}</span>
+          <span class="meta">${e.meta>0?'meta '+fmtMoney(e.meta)+' · '+pct+'%':'sin meta'}</span>
+        </div>
+        <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      </div>`;
+    cont.appendChild(card);
+  });
+  cont.querySelectorAll('[data-id]').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const id=Number(inp.dataset.id), f=inp.dataset.f;
+      const val=(f==='meta'||f==='recaudado')?(Number(inp.value)||0):inp.value;
+      updateEvento(id, { [f]: val });
+      if(f==='estado'){ const e=state.eventos.find(x=>x.id===id);
+        inp.className="estado "+(ESTADOS.find(s=>s.v===e.estado)?.c||''); }
+      if(f==='meta'||f==='recaudado'){ refreshCardProgress(id); renderFondos(); }
+    });
+  });
+}
+function refreshCardProgress(id){
+  const idx=state.eventos.findIndex(x=>x.id===id); const e=state.eventos[idx];
+  const card=document.querySelectorAll('#eventos .card')[idx]; if(!card||!e) return;
+  const pct=e.meta>0?Math.min(100,Math.round(e.recaudado/e.meta*100)):0;
+  card.querySelector('.fill').style.width=pct+"%";
+  card.querySelector('.recaudado').textContent=fmtMoney(e.recaudado);
+  card.querySelector('.meta').textContent=e.meta>0?'meta '+fmtMoney(e.meta)+' · '+pct+'%':'sin meta';
+}
+
+/* ---------- Indicadores ---------- */
+let savedT;
+function flashSaved(){ const t=document.getElementById('savedTag');
+  t.classList.add('show'); clearTimeout(savedT); savedT=setTimeout(()=>t.classList.remove('show'),1400); }
+function updInfo(){
+  const rows=[...state.eventos,...state.destinos].filter(r=>r.updated_at);
+  const el=document.getElementById('updInfo');
+  if(!rows.length){ el.textContent="—"; return; }
+  rows.sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));
+  const r=rows[0]; const d=new Date(r.updated_at);
+  el.textContent=d.toLocaleString('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+    + (r.updated_by?' por '+r.updated_by:'');
+}
+function banner(msg){ const b=document.getElementById('banner');
+  if(msg){ b.textContent=msg; b.classList.add('show'); } else b.classList.remove('show'); }
+
+/* ---------- utils ---------- */
+function escapeHtml(s){ return String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function escapeAttr(s){ return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+</script>
+</body>
+</html>
