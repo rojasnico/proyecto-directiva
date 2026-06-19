@@ -157,16 +157,16 @@
     <h1>Panel de eventos y fondos</h1>
     <p class="sub">Ingresa para revisar y actualizar la planificación de la directiva.</p>
     <div class="field">
-      <label for="nombre">Tu nombre</label>
-      <input type="text" id="nombre" placeholder="Ej: Carolina Pérez" autocomplete="name" />
+      <label for="email">Email</label>
+      <input type="text" id="email" placeholder="tu correo" autocomplete="username" inputmode="email" />
     </div>
     <div class="field">
-      <label for="codigo">Código de acceso</label>
-      <input type="password" id="codigo" placeholder="Código compartido" autocomplete="off" />
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="Tu contraseña" autocomplete="current-password" />
     </div>
     <div class="err" id="loginErr"></div>
     <button class="btn block" id="entrar">Ingresar</button>
-    <p class="hint">Tu nombre queda registrado en cada cambio. El código es compartido por toda la directiva.</p>
+    <p class="hint">Cada cuenta es personal. Tus cambios quedan registrados con tu nombre. ¿Sin acceso? Pídeselo a la directiva.</p>
   </div>
 </div>
 
@@ -227,9 +227,6 @@
 const SUPABASE_URL = "https://tljzrwvbuendyenwmqph.supabase.co";
 const SUPABASE_KEY = "sb_publishable_k8ceN2Y93iGF1jCd0KqIig_ryTZAFSc";
 
-/* Código de acceso compartido. Cámbialo cuando quieras. */
-const CODIGO_ACCESO = "curso2026";
-
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* ---------- Formato chileno ---------- */
@@ -248,28 +245,42 @@ let sesion = "";
 let pending = false;       // hay cambios remotos sin aplicar (mientras editas)
 let lastWrite = 0;         // para ignorar el "eco" de tus propios cambios
 
-/* ---------- Login ---------- */
+/* ---------- Login (Supabase Auth) ---------- */
 document.getElementById('entrar').onclick = entrar;
-document.getElementById('codigo').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
-document.getElementById('nombre').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('codigo').focus(); });
+document.getElementById('email').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('password').focus(); });
+document.getElementById('password').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
 
 async function entrar(){
-  const nombre = document.getElementById('nombre').value.trim();
-  const cod = document.getElementById('codigo').value;
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
   const err = document.getElementById('loginErr');
-  if(!nombre){ err.textContent="Escribe tu nombre para continuar."; return; }
-  if(cod !== CODIGO_ACCESO){ err.textContent="Código incorrecto. Pídelo a la directiva."; return; }
-  err.textContent=""; sesion = nombre;
-  document.getElementById('sesionNombre').textContent = nombre;
-  document.getElementById('login').style.display="none";
-  document.getElementById('app').style.display="block";
-  await reload(); render(); suscribir();
+  if(!email || !password){ err.textContent="Escribe tu email y contraseña."; return; }
+  const btn = document.getElementById('entrar');
+  btn.disabled = true; err.textContent = "";
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false;
+  if(error){ err.textContent = "Email o contraseña incorrectos."; return; }
+  abrirApp(data.user);
 }
-document.getElementById('salir').onclick = ()=>{
-  sesion=""; document.getElementById('codigo').value="";
-  document.getElementById('app').style.display="none";
-  document.getElementById('login').style.display="grid";
+
+function abrirApp(user){
+  sesion = (user.user_metadata && user.user_metadata.full_name) || user.email;
+  document.getElementById('sesionNombre').textContent = sesion;
+  document.getElementById('password').value = "";
+  document.getElementById('login').style.display = "none";
+  document.getElementById('app').style.display = "block";
+  reload().then(()=>{ render(); suscribir(); });
+}
+
+document.getElementById('salir').onclick = async ()=>{
+  await sb.auth.signOut();
+  sesion = "";
+  document.getElementById('app').style.display = "none";
+  document.getElementById('login').style.display = "grid";
 };
+
+/* Restaurar sesión si ya había iniciado antes (no vuelve a pedir login al recargar) */
+sb.auth.getSession().then(({ data })=>{ if(data && data.session) abrirApp(data.session.user); });
 document.getElementById('refrescar').onclick = async e=>{ e.preventDefault(); await reload(); render(); };
 document.getElementById('stale').onclick = async ()=>{ await reload(); render(); hideStale(); };
 

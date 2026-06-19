@@ -1,54 +1,59 @@
-# Panel de la Directiva de Curso — Publicar en GitHub Pages
+# Panel de la Directiva de Curso
 
-Esta página ya está conectada a la base de datos. Solo falta subirla a GitHub
-y activar GitHub Pages para que tenga una dirección pública y gratuita.
+Página para planificar eventos y administrar los fondos de la directiva.
+Está publicada en GitHub Pages y conectada a una base de datos en Supabase.
 
-## Paso a paso (unos 5 minutos)
-
-### 1. Crea una cuenta en GitHub (si no tienes)
-Anda a https://github.com y regístrate. Es gratis.
-
-### 2. Crea un repositorio nuevo
-- Arriba a la derecha, botón **+** → **New repository**.
-- Ponle un nombre, por ejemplo: `directiva-curso`.
-- Déjalo en **Public**.
-- Marca la casilla **Add a README file** (opcional).
-- Botón **Create repository**.
-
-### 3. Sube el archivo `index.html`
-- Dentro del repositorio: botón **Add file** → **Upload files**.
-- Arrastra el archivo **`index.html`** (el que está en esta misma carpeta).
-- Abajo, botón **Commit changes**.
-
-### 4. Activa GitHub Pages
-- En el repositorio, anda a **Settings** (la rueda dentada, arriba).
-- En el menú de la izquierda, entra a **Pages**.
-- En **Source**, elige **Deploy from a branch**.
-- En **Branch**, elige **main** y la carpeta **/ (root)**. Botón **Save**.
-
-### 5. Listo
-Espera 1–2 minutos y recarga la página de **Settings → Pages**.
-Aparecerá tu dirección pública, algo como:
+## Dirección pública
 
 ```
-https://tu-usuario.github.io/directiva-curso/
+https://rojasnico.github.io/proyecto-directiva/
 ```
 
-Comparte ese link y el código de acceso `curso2026` con la directiva.
-Funciona desde cualquier navegador, en celular o computador.
+## Cómo se entra (login)
 
-## Cambiar el código de acceso
-Abre `index.html`, busca esta línea y cámbiala:
+El acceso es con **cuenta personal** (email + contraseña) mediante Supabase Auth.
+Ya no hay un código compartido. Solo las personas con cuenta pueden ver y editar
+los datos: sin iniciar sesión, la base de datos no entrega nada.
 
-```js
-const CODIGO_ACCESO = "curso2026";
+Cada cambio queda registrado con el nombre de quien lo hizo.
+
+### Miembros con cuenta
+- María Jesús Retamal — mjretama@gmail.com
+- Carlos Donoso — carlosdonosog@yahoo.com
+- Edwin Rojas — edwin.nr.galvez@gmail.com
+
+La contraseña inicial de todas las cuentas es la misma; pídela por interno y
+cámbiala apenas entres (ver más abajo).
+
+## Agregar un nuevo miembro
+
+Se crea su cuenta en Supabase (panel del proyecto **directiva-curso** →
+**Authentication** → **Add user**), con email, contraseña y "Auto Confirm".
+Listo, ya puede entrar.
+
+## Cambiar la contraseña
+
+Desde el panel de Supabase: **Authentication** → selecciona el usuario →
+**Reset password / Update**. (Más adelante se puede agregar un botón de
+"cambiar contraseña" dentro de la propia página.)
+
+## Seguridad
+
+- La llave de Supabase dentro del `index.html` es **pública por diseño**: es
+  normal que quede a la vista. Lo que protege los datos es el inicio de sesión
+  y las reglas de acceso (RLS), no la llave.
+- Las tablas `eventos` y `destinos` solo permiten lectura/escritura a usuarios
+  **autenticados**. Sin login, nadie accede.
+- Los datos se comparten en vivo entre todos los que tengan cuenta.
+
+## Actualizar la página
+
+Editar los archivos y luego:
+
+```
+git add -A
+git commit -m "tu mensaje"
+git push
 ```
 
-Luego vuelve a subir el archivo (Add file → Upload files → reemplaza).
-
-## Notas
-- La llave de Supabase dentro del `index.html` es **pública por diseño**:
-  es normal y seguro que quede a la vista en una página estática.
-- Cualquiera con el link y el código puede ver y editar (así lo definiste).
-  No guardes datos sensibles (RUT, datos de cuentas personales).
-- Los datos se comparten en vivo entre todos los que entren.
+Los cambios se reflejan en la dirección pública en ~1 minuto.
