@@ -220,6 +220,9 @@
     /* Tarjetas de evento: estado/borrar bajan de línea en vez de solaparse */
     .card .top{ flex-wrap:wrap; }
     .card .top .estado{ flex:1 1 auto; }
+    /* Fecha/Responsable y Meta/Recaudado: una columna para que no se solapen */
+    .two{ grid-template-columns:1fr; gap:11px; }
+    input[type=date]{ width:100%; min-width:0; }
 
     /* Destinos: columnas más angostas */
     .drow{ grid-template-columns:1fr 104px 34px; gap:8px; }
