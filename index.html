@@ -163,6 +163,17 @@
     font-size:18px; line-height:1; border-radius:8px; padding:4px 7px; }
   .card .top .del:hover{ background:#FCEBEA; color:var(--copihue); }
 
+  /* Modal cambiar contraseña */
+  .modal-bg{ position:fixed; inset:0; background:rgba(35,40,107,.45); display:none; place-items:center;
+    z-index:50; padding:20px; }
+  .modal-bg.show{ display:grid; }
+  .modal{ background:#fff; border:1px solid var(--linea); border-radius:var(--radio); box-shadow:var(--sombra);
+    padding:26px 24px 22px; width:100%; max-width:360px; }
+  .modal h3{ font-family:"Fraunces",serif; font-weight:600; font-size:19px; margin:0 0 4px; }
+  .modal p.sub{ margin:0 0 18px; color:var(--tinta-suave); font-size:13.5px; }
+  .modal .ok{ color:var(--verde); font-size:13px; min-height:18px; margin:-4px 0 12px; font-weight:600; }
+  .modal-actions{ display:flex; gap:8px; margin-top:6px; }
+
   @media (max-width:760px){
     .grid{ grid-template-columns:1fr; } .kpis{ grid-template-columns:1fr; }
     .bar .who{ font-size:12px; } main{ padding:20px 16px 60px; }
@@ -235,7 +246,10 @@
       </span>
       <div class="who">
         <div>Sesión: <b id="sesionNombre"></b></div>
-        <button class="btn ghost sm" id="salir" style="margin-top:4px">Cerrar sesión</button>
+        <div style="margin-top:4px; display:flex; gap:6px; justify-content:flex-end;">
+          <button class="btn ghost sm" id="cambiarPass">Cambiar contraseña</button>
+          <button class="btn ghost sm" id="salir">Cerrar sesión</button>
+        </div>
       </div>
     </div>
   </header>
@@ -279,6 +293,27 @@
 
     <p class="foot">Última actualización: <span id="updInfo">—</span> · <a href="#" id="refrescar">Actualizar datos</a></p>
   </main>
+
+  <div class="modal-bg" id="passModal">
+    <div class="modal">
+      <h3>Cambiar contraseña</h3>
+      <p class="sub">Elige una nueva contraseña (mínimo 6 caracteres).</p>
+      <div class="field">
+        <label for="pass1">Nueva contraseña</label>
+        <input type="password" id="pass1" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label for="pass2">Repite la contraseña</label>
+        <input type="password" id="pass2" autocomplete="new-password" />
+      </div>
+      <div class="err" id="passErr"></div>
+      <div class="ok" id="passOk"></div>
+      <div class="modal-actions">
+        <button class="btn block" id="passGuardar">Guardar</button>
+        <button class="btn ghost" id="passCancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -340,6 +375,40 @@ document.getElementById('salir').onclick = async ()=>{
   document.getElementById('app').style.display = "none";
   document.getElementById('login').style.display = "grid";
 };
+
+/* ---------- Cambiar contraseña ---------- */
+const passModal = document.getElementById('passModal');
+function abrirPass(){
+  document.getElementById('pass1').value = "";
+  document.getElementById('pass2').value = "";
+  document.getElementById('passErr').textContent = "";
+  document.getElementById('passOk').textContent = "";
+  passModal.classList.add('show');
+  document.getElementById('pass1').focus();
+}
+function cerrarPass(){ passModal.classList.remove('show'); }
+document.getElementById('cambiarPass').onclick = abrirPass;
+document.getElementById('passCancel').onclick = cerrarPass;
+passModal.addEventListener('click', e=>{ if(e.target===passModal) cerrarPass(); });
+document.getElementById('pass2').addEventListener('keydown', e=>{ if(e.key==='Enter') guardarPass(); });
+
+async function guardarPass(){
+  const p1 = document.getElementById('pass1').value;
+  const p2 = document.getElementById('pass2').value;
+  const err = document.getElementById('passErr');
+  const ok = document.getElementById('passOk');
+  err.textContent = ""; ok.textContent = "";
+  if(p1.length < 6){ err.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+  if(p1 !== p2){ err.textContent = "Las contraseñas no coinciden."; return; }
+  const btn = document.getElementById('passGuardar');
+  btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  btn.disabled = false;
+  if(error){ err.textContent = "No se pudo cambiar la contraseña. Intenta de nuevo."; console.error(error); return; }
+  ok.textContent = "✓ Contraseña actualizada.";
+  setTimeout(cerrarPass, 1200);
+}
+document.getElementById('passGuardar').onclick = guardarPass;
 
 /* Restaurar sesión si ya había iniciado antes (no vuelve a pedir login al recargar) */
 sb.auth.getSession().then(({ data })=>{ if(data && data.session) abrirApp(data.session.user); });
