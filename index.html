@@ -201,8 +201,35 @@
   .muted{ color:var(--tinta-suave); }
 
   @media (max-width:760px){
-    .grid{ grid-template-columns:1fr; } .kpis{ grid-template-columns:1fr; }
-    .bar .who{ font-size:12px; } main{ padding:20px 16px 60px; }
+    main{ padding:20px 14px 56px; }
+    .grid{ grid-template-columns:1fr; }
+    .kpis{ grid-template-columns:1fr; }
+
+    /* Cabecera: que se apile y no se solape */
+    .bar-in{ flex-wrap:wrap; padding:12px 14px; gap:8px 12px; }
+    .mark b{ font-size:16px; }
+    .mark .escudo{ height:34px; }
+    .bar .who{ margin-left:0; width:100%; font-size:12px; text-align:left;
+      display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; }
+    .bar .who > div:last-child{ margin-top:0; margin-left:auto; }
+
+    /* Encabezados de sección y botón "hay cambios" */
+    h2.sec{ flex-wrap:wrap; }
+    .stale{ margin-left:0; }
+
+    /* Tarjetas de evento: estado/borrar bajan de línea en vez de solaparse */
+    .card .top{ flex-wrap:wrap; }
+    .card .top .estado{ flex:1 1 auto; }
+
+    /* Destinos: columnas más angostas */
+    .drow{ grid-template-columns:1fr 104px 34px; gap:8px; }
+
+    /* Pestañas a todo el ancho */
+    .tab{ flex:1; padding:10px 6px; text-align:center; }
+  }
+  @media (max-width:380px){
+    .mark b{ font-size:15px; }
+    .btn.sm{ padding:6px 9px; font-size:12px; }
   }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
@@ -459,7 +486,7 @@ function renderFinanzas(d){
   let html='';
 
   html+=`<div class="fin-card"><h3>Resumen general</h3>
-    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
       <div class="kpi"><div class="lbl">Cuotas recaudadas</div><div class="val mono">${fmtMoney(r.cuotas_recaudado)}</div></div>
       <div class="kpi"><div class="lbl">Cuotas esperadas</div><div class="val mono">${fmtMoney(r.cuotas_esperado)}</div></div>
       <div class="kpi"><div class="lbl">Por cobrar (cuotas)</div><div class="val mono">${fmtMoney(r.cuotas_diferencia)}</div></div>
